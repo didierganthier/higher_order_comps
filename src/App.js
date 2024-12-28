@@ -1,14 +1,20 @@
 
 import './App.css';
 import UserInfo from './components/UserInfo';
-import withLoading from './components/withLoading';
+import withLoadingAndData from './components/withLoadingAndData';
 
-const UserInfoWithLoading = withLoading(UserInfo);
+const fetchUserData = () => new Promise((resolve) => {
+  setTimeout(() => {
+    resolve({ name: "Didier Ganthier", email: "didierganthierperan@gmail.com"})
+  }, 2000);
+})
+
+const UserInfoWithLoading = withLoadingAndData(UserInfo, fetchUserData)
 
 function App() {
   return (
     <div>
-      <UserInfoWithLoading name="Didier Ganthier" email="didierganthierperan@gmail.com" />
+      <UserInfoWithLoading />
     </div>
   );
 }
