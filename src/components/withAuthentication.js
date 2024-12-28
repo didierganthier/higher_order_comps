@@ -1,28 +1,38 @@
 import React, { useEffect, useState } from "react";
 
-const withAuthentication = (Component) => {
+const defaultAuthLogic = () => new Promise((resolve) => setTimeout(resolve(false), 2000)); // defaults to false
+const DefaultAccessDeniedComponent = () => <div>Access Denied</div>
+
+const withAuthentication = (Component, authLogic = defaultAuthLogic, AccessDeniedComponent = DefaultAccessDeniedComponent) => {
     return (props) => {
         const [isAuthenticated, setIsAuthenticated] = useState(false);
         const [isAuthenticating, setIsAuthenticating] = useState(true);
+        const [userInfo, setUserInfo] = useState(null);
 
-        // simulate authentication
         useEffect(() => {
-            setTimeout(() => {
-                setIsAuthenticated(false);
-                setIsAuthenticating(false)
-            }, 2000)
+            authLogic().then((authResult) => {
+                setIsAuthenticated(authResult);
+
+                if(authResult) {
+                    setUserInfo({
+                        username: 'didierganthier',
+                        role: 'admin'
+                    })
+                }
+            })
+            .finally(() => setIsAuthenticating(false));
         }, [])
 
         if(isAuthenticating) {
-            return <div>Loading...</div>
+            return <div>Authenticating...</div>
         }
 
         if(!isAuthenticated) {
-            return <div>Access Denied</div>
+            return <AccessDeniedComponent />
         }
 
         return (
-            <Component {...props}/>
+            <Component {...props} userInfo={userInfo}/>
         )
     }
 }
