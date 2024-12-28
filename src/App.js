@@ -1,20 +1,14 @@
 
 import './App.css';
-import UserInfo from './components/UserInfo';
-import withLoadingAndData from './components/withLoadingAndData';
+import Dashboard from './components/Dashboard';
+import withAuthentication from './components/withAuthentication';
 
-const fetchUserData = () => new Promise((resolve) => {
-  setTimeout(() => {
-    resolve({ name: "Didier Ganthier", email: "didierganthierperan@gmail.com"})
-  }, 2000);
-})
-
-const UserInfoWithLoading = withLoadingAndData(UserInfo, fetchUserData)
+const UserAccess = withAuthentication(Dashboard);
 
 function App() {
   return (
     <div>
-      <UserInfoWithLoading />
+      <UserAccess username="didierganthier"/>
     </div>
   );
 }
